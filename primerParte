@@ -1,0 +1,210 @@
+#define A 12
+#define B 13
+#define C 7
+#define D 8
+#define E 9
+#define F 11
+#define G 10
+#define ENTRADA_RESET 5
+#define ENTRADA_SUMA 4
+#define ENTRADA_RESTA 3
+#define UNIDAD A4
+#define DECENA A5
+#define APAGADO 1
+#define PRENDIDO 0
+
+int contadorDigito = 0; 
+int sumar = 1;
+int restar = 1;
+int reset = 1;
+int contador = 1;
+
+void setup()
+{
+  // Configurar los pines de entrada para los botones y los pines de salida
+  pinMode(ENTRADA_RESTA, INPUT_PULLUP);
+  pinMode(ENTRADA_SUMA, INPUT_PULLUP);
+  pinMode(ENTRADA_RESET, INPUT_PULLUP);
+  pinMode(C, OUTPUT);
+  pinMode(D, OUTPUT);
+  pinMode(E, OUTPUT);
+  pinMode(G, OUTPUT);
+  pinMode(F, OUTPUT);
+  pinMode(A, OUTPUT);
+  pinMode(B, OUTPUT);
+  pinMode(UNIDAD, OUTPUT);
+  pinMode(DECENA, OUTPUT);
+ 
+  // Inicializa pines en APAGADO / ENCENDIDO
+  digitalWrite(UNIDAD, APAGADO);
+  digitalWrite(DECENA, APAGADO);
+  digitalWrite(A, LOW);
+  digitalWrite(B, LOW);
+  digitalWrite(C, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(E, LOW);
+  digitalWrite(F, LOW);
+  digitalWrite(G, LOW);
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  contador = botonPresionado();
+  dividirUnidades(contador);
+
+}
+
+// FUNCIONES ------------------------------------------------
+// Apagamos a todos los pines de los display y 
+// los encendemos solo si entran en algun case
+void imprimirDigito(int digit)
+{
+  digitalWrite(A, LOW);
+  digitalWrite(B, LOW);
+  digitalWrite(C, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(E, LOW);
+  digitalWrite(F, LOW);
+  digitalWrite(G, LOW);
+  
+  // Controlar la visualización de siete segmentos según el valor de digit
+  switch(digit)
+  {
+    case 0: // 0 - A,B,C,D,E,F
+  		digitalWrite(A, HIGH);
+  		digitalWrite(B, HIGH);
+  		digitalWrite(C, HIGH);
+  		digitalWrite(D, HIGH);
+  		digitalWrite(E, HIGH);
+  		digitalWrite(F, HIGH);	
+  		break;
+    case 1: // 1 - B,C
+  		digitalWrite(B, HIGH);
+  		digitalWrite(C, HIGH);
+  		break;
+    case 2: // 2 - A,B,D,E,G
+  		digitalWrite(A, HIGH);
+  		digitalWrite(B, HIGH);
+  		digitalWrite(D, HIGH);
+  		digitalWrite(E, HIGH);
+  		digitalWrite(G, HIGH);
+    	break;
+    case 3: // 3 - A,B,C,D,G
+  		digitalWrite(A, HIGH);
+  		digitalWrite(B, HIGH);
+  		digitalWrite(C, HIGH);
+  		digitalWrite(D, HIGH);
+  		digitalWrite(G, HIGH);
+  		break;
+    case 4: // 4 - B,C,F,G
+  		digitalWrite(B, HIGH);
+  		digitalWrite(C, HIGH);
+  		digitalWrite(F, HIGH);
+  		digitalWrite(G, HIGH);
+  		break;
+    case 5: // 5 - A,C,D,F,G
+  		digitalWrite(A, HIGH);
+  		digitalWrite(C, HIGH);
+  		digitalWrite(D, HIGH);
+  		digitalWrite(F, HIGH);
+  		digitalWrite(G, HIGH);
+  		break;
+    case 6: // 6 - A,C,D,E,F,G
+    	digitalWrite(A, HIGH);
+  		digitalWrite(C, HIGH);
+  		digitalWrite(D, HIGH);
+  		digitalWrite(E, HIGH);
+  		digitalWrite(F, HIGH);
+  		digitalWrite(G, HIGH);
+  		break;
+    case 7: // 7 - A,B,C
+  		digitalWrite(A, HIGH);
+ 		digitalWrite(B, HIGH);
+  		digitalWrite(C, HIGH);
+  		break;
+    case 8: // 8 - TODOS
+  		digitalWrite(A, HIGH);
+  		digitalWrite(B, HIGH);
+  		digitalWrite(C, HIGH);
+  		digitalWrite(D, HIGH);
+  		digitalWrite(E, HIGH);
+  		digitalWrite(F, HIGH);
+  		digitalWrite(G, HIGH);
+  		break;
+    case 9:
+    	// 9 - A,B,C,F,G
+  		digitalWrite(A, HIGH);
+  		digitalWrite(B, HIGH);
+ 		digitalWrite(C, HIGH);
+  		digitalWrite(D, LOW);
+  		digitalWrite(E, LOW);
+  		digitalWrite(F, HIGH);
+  		digitalWrite(G, HIGH);
+  		break;
+    case -1:
+    	// APAGADO
+  		digitalWrite(A, LOW);
+  		digitalWrite(B, LOW);
+ 		digitalWrite(C, LOW);
+  		digitalWrite(D, LOW);
+  		digitalWrite(E, LOW);
+  		digitalWrite(F, LOW);
+  		digitalWrite(G, LOW);
+    	break;
+  }
+}
+
+
+void dividirUnidades(int numero)
+{
+  int unidad = 0;
+  int decena = 0;
+  
+  	//Me devuelve la DECENA
+  	decena = (numero/10);
+   	//Me devuelve la UNIDAD
+ 	unidad = (numero - 10 * ((int)numero / 10));
+  
+    //APAGADO DISPLAY
+  	digitalWrite(UNIDAD, APAGADO);
+ 	digitalWrite(DECENA, APAGADO);
+  	//LLAMO A LA FUNCION PARA MOSTRAR UNIDAD
+  	imprimirDigito(unidad);
+    digitalWrite(UNIDAD, PRENDIDO);
+  	delay(20);
+  	//APAGADO DISPLAY
+  	digitalWrite(UNIDAD, APAGADO);
+ 	digitalWrite(DECENA, APAGADO);
+  	//LLAMO A LA FUNCION PARA MOSTRAR DECENA
+    imprimirDigito(decena);
+  	digitalWrite(DECENA, PRENDIDO);
+  	delay(20);
+}
+
+int botonPresionado(void)
+{
+  // Leemos con digitalRead el estado de los pines Y me retorna el contador
+  sumar = digitalRead(ENTRADA_SUMA);
+  restar = digitalRead(ENTRADA_RESTA);
+  reset = digitalRead(ENTRADA_RESET);
+  
+  if(sumar == 0)
+  {
+    contadorDigito++;
+    if(contadorDigito > 99)
+      contadorDigito = 0;   
+  }
+  if(restar == 0)
+  {
+    contadorDigito--;
+    if(contadorDigito < 0)
+      contadorDigito = 99; 
+  }
+  if(reset == 0)
+  {
+    contadorDigito = 0;
+  }
+  Serial.println(contadorDigito);
+  return contadorDigito;
+}
