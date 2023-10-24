@@ -1,6 +1,6 @@
 # Control de Velocidad de Ventilador con Sensor de Temperatura
 
-Este proyecto de Arduino Uno en Tinkercad te permite controlar la velocidad de un ventilador de acuerdo con la temperatura ambiente. Cuando la temperatura aumenta, el ventilador gira más rápido para enfriar el entorno. Además, muestra la temperatura en un display de 7 segmentos.
+Este proyecto de Arduino Uno en Tinkercad te permite controlar la velocidad de un ventilador de acuerdo con la temperatura ambiente. Cuando la temperatura aumenta, el ventilador gira más rápido para enfriar el entorno. Además, muestra la velocidad del 0 al 99 en un display de 7 segmentos.
 
 ![image](https://github.com/Luanda-Toledo/PP_SPD/assets/58377353/a094c25c-922f-48fc-9db3-8f0028f88ba1)
 
